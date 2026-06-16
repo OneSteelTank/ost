@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DoorDash Offer Calculator</title>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 500px;
+      margin: 20px auto;
+      padding: 15px;
+      line-height: 1.5;
+    }
+
+    h2 {
+      margin-top: 0;
+    }
+
+    label {
+      display: block;
+      margin-top: 12px;
+    }
+
+    input {
+      width: 100%;
+      padding: 8px;
+      font-size: 16px;
+      box-sizing: border-box;
+    }
+
+    .result {
+      margin-top: 20px;
+      padding: 12px;
+      border: 1px solid #ccc;
+    }
+
+    #score {
+      font-size: 28px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+
+<h2>DoorDash Offer Score Calculator</h2>
+
+<label>
+  Target hourly earnings ($/hr)
+  <input id="target" type="number" value="20" step="0.01">
+</label>
+
+<label>
+  Offer amount ($)
+  <input id="pay" type="number" value="10.35" step="0.01">
+</label>
+
+<label>
+  Estimated order time (minutes)
+  <input id="time" type="number" value="32">
+</label>
+
+<label>
+  Restaurant wait padding (minutes)
+  <input id="wait" type="number" value="5">
+</label>
+
+<label>
+  Time until next offer (minutes)
+  <input id="next" type="number" value="5">
+</label>
+
+<div class="result">
+  <div>Total effective time: <span id="totalTime"></span> minutes</div>
+  <div>Equivalent hourly rate: <strong>$<span id="hourly"></span>/hr</strong></div>
+  <div>Score: <span id="score"></span></div>
+  <div id="message"></div>
+</div>
+
+<script>
+function update() {
+  const target = Number(document.getElementById("target").value);
+  const pay = Number(document.getElementById("pay").value);
+  const time = Number(document.getElementById("time").value);
+  const wait = Number(document.getElementById("wait").value);
+  const next = Number(document.getElementById("next").value);
+
+  const totalMinutes = time + wait + next;
+  const hourly = pay * 60 / totalMinutes;
+  const score = hourly / target;
+
+  document.getElementById("totalTime").textContent = totalMinutes.toFixed(1);
+  document.getElementById("hourly").textContent = hourly.toFixed(2);
+  document.getElementById("score").textContent = score.toFixed(2);
+
+  let message = "";
+  if (score >= 2) {
+    message = "Excellent (2x your target)";
+  } else if (score >= 1.5) {
+    message = "Very good";
+  } else if (score >= 1.0) {
+    message = "Meets your target";
+  } else if (score >= 0.8) {
+    message = "Slightly below target";
+  } else {
+    message = "Poor offer";
+  }
+
+  document.getElementById("message").textContent = message;
+}
+
+document.querySelectorAll("input").forEach(input => {
+  input.addEventListener("input", update);
+});
+
+update();
+</script>
+
+</body>
+</html>
