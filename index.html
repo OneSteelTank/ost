@@ -48,12 +48,12 @@
 
 <label>
   Target hourly earnings ($/hr)
-  <input id="target" type="number" value="20" step="0.01">
+  <input id="target" type="number" value="20" step="1">
 </label>
 
 <label>
   Offer amount ($)
-  <input id="pay" type="number" value="10.35" step="0.01">
+  <input id="pay" type="number" value="10.67" step="0.1">
 </label>
 
 <label>
@@ -64,6 +64,11 @@
 <label>
   Restaurant wait padding (minutes)
   <input id="wait" type="number" value="5">
+</label>
+
+<label>
+  Time to deliver food (minutes)
+  <input id="deliver" type="number" value="3">
 </label>
 
 <label>
@@ -99,10 +104,11 @@ function update() {
   const target = Number(document.getElementById("target").value);
   const pay = Number(document.getElementById("pay").value);
   const time = Number(document.getElementById("time").value);
-  const wait = Number(document.getElementById("wait").value);
+  const wait = Number(document.getElementById("wait").value);  
+  const deliver = Number(document.getElementById("deliver").value);
   const next = Number(document.getElementById("next").value);
 
-  const totalMinutes = time + wait + next;
+  const totalMinutes = time + wait + deliver + next;
   const hourly = pay * 60 / totalMinutes;
   const score = hourly / target;
 
@@ -130,7 +136,7 @@ function update() {
   tbody.innerHTML = "";
 
   for (let offer = 5; offer <= 15; offer++) {
-    const maxOrderTime = (offer * 60 / target) - wait - next;
+    const maxOrderTime = (offer * 60 / target) - wait - deliver - next;
 
     const row = document.createElement("tr");
 
