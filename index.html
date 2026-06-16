@@ -78,6 +78,22 @@
   <div id="message"></div>
 </div>
 
+<h3>Quick Reference (Score = 1.00)</h3>
+<p>
+  Maximum estimated order time for each payout, based on your current
+  target hourly rate and padding settings.
+</p>
+
+<table border="1" cellpadding="6" cellspacing="0">
+  <thead>
+    <tr>
+      <th>Offer</th>
+      <th>Max Estimated Order Time</th>
+    </tr>
+  </thead>
+  <tbody id="referenceTable"></tbody>
+</table>
+
 <script>
 function update() {
   const target = Number(document.getElementById("target").value);
@@ -96,11 +112,11 @@ function update() {
 
   let message = "";
   if (score >= 2) {
-    message = "Excellent)";
+    message = "Excellent";
   } else if (score >= 1.5) {
     message = "Very good";
   } else if (score >= 1.0) {
-    message = "Meets your target";
+    message = "Meets target";
   } else if (score >= 0.8) {
     message = "Slightly below target";
   } else {
@@ -108,6 +124,30 @@ function update() {
   }
 
   document.getElementById("message").textContent = message;
+
+  // Build quick reference table
+  const tbody = document.getElementById("referenceTable");
+  tbody.innerHTML = "";
+
+  for (let offer = 5; offer <= 15; offer++) {
+    const maxOrderTime = (offer * 60 / target) - wait - next;
+
+    const row = document.createElement("tr");
+
+    const offerCell = document.createElement("td");
+    offerCell.textContent = "$" + offer;
+
+    const timeCell = document.createElement("td");
+    if (maxOrderTime <= 0) {
+      timeCell.textContent = "Not possible";
+    } else {
+      timeCell.textContent = maxOrderTime.toFixed(1) + " min";
+    }
+
+    row.appendChild(offerCell);
+    row.appendChild(timeCell);
+    tbody.appendChild(row);
+  }
 }
 
 document.querySelectorAll("input").forEach(input => {
